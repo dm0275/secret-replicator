@@ -1,0 +1,38 @@
+{{- if .Values.rbac.create -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.rbac.serviceAccount.name | default "secret-replicator-controller-sa" }}
+  labels:
+    {{- include "secret-replicator-controller.labels" . | nindent 4 }}
+  {{- with .Values.rbac.serviceAccount.name }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.rbac.clusterRole.name | default "secret-replicator-controller-role" }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["list", "get", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Values.rbac.clusterRole.name | default "secret-replicator-controller-role-binding" }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.rbac.serviceAccount.name | default "secret-replicator-controller-sa" }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .Values.rbac.clusterRole.name | default "secret-replicator-controller-role" }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
