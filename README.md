@@ -1,1 +1,1 @@
-# secret-replicator
+# Secret Replicator Controller
