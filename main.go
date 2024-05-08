@@ -20,6 +20,7 @@ import (
 	"com.dm0275/secret-replicator-controller/pkg/controller"
 	"crypto/tls"
 	"flag"
+	"go.uber.org/zap/zapcore"
 	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
@@ -63,13 +64,16 @@ func main() {
 		"If set the metrics endpoint is served securely")
 	flag.BoolVar(&enableHTTP2, "enable-http2", false,
 		"If set, HTTP/2 will be enabled for the metrics and webhook servers")
-	opts := zap.Options{
-		Development: true,
-	}
-	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
 
-	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+	// Setup zap logging options
+	zapOpts := zap.Options{
+		Development:     false,
+		Level:           zapcore.InfoLevel,
+		StacktraceLevel: zapcore.PanicLevel,
+	}
+
+	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&zapOpts)))
 
 	// if the enable-http2 flag is false (the default), http/2 should be disabled
 	// due to its vulnerabilities. More specifically, disabling http/2 will
