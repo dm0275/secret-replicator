@@ -25,6 +25,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      # Test the controller
+      - name: Test
+        run: ./gradlew test --stacktrace
       # Build the controller
       - name: Build
         run: ./gradlew dockerBuildImage --stacktrace

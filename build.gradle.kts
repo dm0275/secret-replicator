@@ -31,7 +31,7 @@ docker {
 }
 
 tasks.register("dockerBuildImage", DockerBuildImage::class) {
-    dependsOn("build")
+    dependsOn("assemble")
     inputDir.set(rootDir)
     images.addAll(imageTags)
 }
