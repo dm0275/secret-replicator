@@ -34,7 +34,7 @@ func (r *SecretReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	}
 
 	// TODO: Implement controller reconcile logic
-	logger.Info("Reconciling Configmap")
+	logger.Info("Reconciling Secret")
 
 	return ctrl.Result{}, nil
 }
