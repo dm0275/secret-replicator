@@ -17,6 +17,7 @@ limitations under the License.
 package main
 
 import (
+	"com.dm0275/secret-replicator-controller/pkg/controller"
 	"crypto/tls"
 	"flag"
 	"os"
@@ -115,6 +116,14 @@ func main() {
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
+		os.Exit(1)
+	}
+
+	if err = (&controller.SecretReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Secret")
 		os.Exit(1)
 	}
 
